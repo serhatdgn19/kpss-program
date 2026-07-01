@@ -351,7 +351,7 @@ content.innerHTML += `
     <p><b>Hafta Notu:</b> ${currentWeek.note || "-"}</p>
     <hr>
 `;
-const days = [
+const weekDays = [
     "Pazartesi",
     "Salı",
     "Çarşamba",
@@ -364,7 +364,7 @@ currentWeek.lessons.forEach((lessonList, dayIndex) => {
 
     content.innerHTML += `
         <div class="lessonCard">
-            <h3>${days[dayIndex]}</h3>
+            <h3>${weekDays[dayIndex]}</h3>
     `;
 
     lessonList.forEach((lesson, lessonIndex) => {
