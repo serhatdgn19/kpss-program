@@ -1,0 +1,104 @@
+/* ========================= */
+/* AUTH SAYFALARI */
+/* ========================= */
+
+.auth-container{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#111827;
+}
+
+.auth-card{
+    width:380px;
+    background:#1f2937;
+    padding:35px;
+    border-radius:12px;
+    box-shadow:0 8px 25px rgba(0,0,0,.35);
+    text-align:center;
+}
+
+.auth-card h1{
+    color:#fff;
+    margin-bottom:10px;
+}
+
+.auth-card h2{
+    color:#f59e0b;
+    margin-bottom:25px;
+}
+
+.auth-card input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #374151;
+    background:#111827;
+    color:#fff;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.auth-card input:focus{
+    outline:none;
+    border-color:#f59e0b;
+}
+
+.auth-card button{
+    width:100%;
+    padding:12px;
+    background:#f59e0b;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.auth-card button:hover{
+    background:#d97706;
+}
+
+.auth-link{
+    margin-top:18px;
+    color:#d1d5db;
+}
+
+.auth-link a{
+    color:#f59e0b;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.auth-link a:hover{
+    text-decoration:underline;
+}
+
+#message{
+    margin-top:15px;
+    color:#ef4444;
+    min-height:20px;
+}
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+.footer{
+    width:100%;
+    text-align:center;
+    padding:20px 10px;
+    margin-top:30px;
+    color:#9ca3af;
+    font-size:13px;
+    line-height:1.7;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+.version{
+    color:#f59e0b;
+    font-weight:700;
+}
