@@ -1,3 +1,10 @@
+import {
+    days,
+    create,
+    openWeek,
+    updateProgress,
+    getTypeClass
+} from "./program.js";
 import { db, auth, doc, getDoc, setDoc, onSnapshot } from "./firebase.js";
 import {
     onAuthStateChanged,

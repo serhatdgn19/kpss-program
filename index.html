@@ -334,6 +334,19 @@ color:white;
     cursor:pointer;
     transition:.2s;
 }
+#adminBtn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#adminBtn:hover{
+    background:#1d4ed8;
+}
 
 #logoutBtn:hover{
     background:#c9302c;
@@ -355,9 +368,20 @@ color:white;
     <h1>Ders Programı</h1>
 
     <div class="user-panel">
-        <span id="userEmail">Yükleniyor...</span>
-        <button id="logoutBtn">Çıkış Yap</button>
-    </div>
+
+    <span id="userEmail">Yükleniyor...</span>
+
+    <button
+        id="adminBtn"
+        style="display:none;">
+        Admin Paneli
+    </button>
+
+    <button id="logoutBtn">
+        Çıkış Yap
+    </button>
+
+</div>
 
 </div>
 

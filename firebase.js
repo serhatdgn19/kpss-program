@@ -7,8 +7,11 @@ import {
     getFirestore,
     doc,
     getDoc,
+    getDocs,
     setDoc,
-    onSnapshot
+    onSnapshot,
+    serverTimestamp,
+    collection
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -26,4 +29,14 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 
-export { db, auth, doc, getDoc, setDoc, onSnapshot };
+export {
+    db,
+    auth,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    onSnapshot,
+    serverTimestamp,
+    collection
+};

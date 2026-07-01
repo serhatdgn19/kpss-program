@@ -1,4 +1,10 @@
-import { auth } from "./firebase.js";
+import {
+    auth,
+    db,
+    doc,
+    setDoc,
+    serverTimestamp
+} from "./firebase.js";
 
 import {
     createUserWithEmailAndPassword,
@@ -48,6 +54,12 @@ if (registerBtn) {
 
     registerBtn.addEventListener("click", async () => {
 
+        const displayName = document.getElementById("displayName").value.trim();
+        if (!displayName) {
+    document.getElementById("message").textContent =
+        "Lütfen ad soyad giriniz.";
+    return;
+}
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
 
@@ -58,6 +70,17 @@ if (registerBtn) {
                 email,
                 password
             );
+            await setDoc(doc(db, "users", userCredential.user.uid), {
+
+    displayName: displayName,
+
+    email: email,
+
+    role: "user",
+
+    createdAt: serverTimestamp()
+
+}, { merge: true });
 
             document.getElementById("message").textContent =
                 "Kayıt başarılı!";

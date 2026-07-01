@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+<div class="admin-container">
+
+    <aside class="sidebar">
+
+        <h2>⚙️ Admin Paneli</h2>
+
+        <button id="usersBtn">👥 Kullanıcılar</button>
+
+        <button id="logoutBtn">🚪 Çıkış Yap</button>
+
+    </aside>
+
+<main class="content">
+
+    <div class="left-panel">
+
+        <h2>Kullanıcılar</h2>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Kullanıcı ara..."
+        >
+
+        <div id="userList"></div>
+        <button id="copyProgramBtn">
+    📋 Programı Kopyala
+</button>
+
+    </div>
+
+    <div class="right-panel">
+
+<div id="programContainer">
+
+    <div id="previewHeader">
+
+        <h2>Kullanıcı Seçilmedi</h2>
+
+        <p>Mail :</p>
+
+        <p>Rol :</p>
+
+        <div id="previewProgress">
+
+            <div id="previewProgressFill"></div>
+
+        </div>
+
+        <span id="previewProgressText">
+            %0
+        </span>
+
+    </div>
+
+    <div id="previewWeeks"></div>
+
+    <div id="previewContent"></div>
+
+</div>
+
+    </div>
+
+</main>
+
+</div>
+
+<script type="module" src="admin.js"></script>
+
+</body>
+</html>
