@@ -15,9 +15,33 @@ onAuthStateChanged(auth, (user) => {
     }
 
     currentUser = user;
+
     document.getElementById("userEmail").textContent = user.email;
 
-    console.log("Giriş yapan kullanıcı:", user.email);
+    const ref = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "programlar",
+        "anaProgram"
+    );
+
+    onSnapshot(ref, async (snap) => {
+
+        if (snap.exists()) {
+
+            data = JSON.parse(snap.data().data);
+
+        } else {
+
+            await saveProgram();
+
+        }
+
+        create();
+        openWeek(activeWeek);
+
+    });
 
 });
 async function saveProgram() {
@@ -423,54 +447,6 @@ function getTypeClass(type){
             return "";
 
     }
-
-}
-onAuthStateChanged(auth, (user) => {
-
-    if (!user) {
-        window.location.href = "login.html";
-        return;
-    }
-
-    currentUser = user;
-
-    const ref = doc(
-        db,
-        "users",
-        currentUser.uid,
-        "programlar",
-        "anaProgram"
-    );
-
-    onSnapshot(ref, async (snap) => {
-
-        if (snap.exists()) {
-
-            data = JSON.parse(snap.data().data);
-
-        } else {
-
-            await saveProgram();
-
-        }
-
-        create();
-        openWeek(activeWeek);
-
-    });
-
-});
-const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener("click", async () => {
-
-        await signOut(auth);
-
-        window.location.href = "login.html";
-
-    });
 
 }
 window.openWeek = openWeek;
