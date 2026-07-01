@@ -455,3 +455,11 @@ window.saveLesson = saveLesson;
 window.closeModal = closeModal;
 window.saveWeekNote = saveWeekNote;
 window.toggleDay = toggleDay;
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+        await signOut(auth);
+        window.location.href = "login.html";
+    });
+}
