@@ -1,13 +1,44 @@
-import { db, doc, getDoc, setDoc, onSnapshot } from "./firebase.js";
+import { db, auth, doc, getDoc, setDoc, onSnapshot } from "./firebase.js";
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+console.log("Firebase Auth hazır.");
+console.log(auth);
+let currentUser = null;
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+    document.getElementById("userEmail").textContent = user.email;
+
+    console.log("Giriş yapan kullanıcı:", user.email);
+
+});
 async function saveProgram() {
-    await setDoc(doc(db,"programlar","anaProgram"),{
-        data: JSON.stringify(data)
-    });
+
+    await setDoc(
+        doc(db, "users", currentUser.uid, "programlar", "anaProgram"),
+        {
+            data: JSON.stringify(data)
+        }
+    );
+
 }
 
 async function loadProgram() {
 
-    const ref = doc(db,"programlar","anaProgram");
+    const ref = doc(
+    db,
+    "users",
+    currentUser.uid,
+    "programlar",
+    "anaProgram"
+);
     const snap = await getDoc(ref);
 
     if(snap.exists()){
@@ -393,18 +424,54 @@ function getTypeClass(type){
     }
 
 }
+onAuthStateChanged(auth, (user) => {
 
-loadProgram();
-onSnapshot(doc(db, "programlar", "anaProgram"), (snap) => {
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
 
-    if (!snap.exists()) return;
+    currentUser = user;
 
-    data = JSON.parse(snap.data().data);
+    const ref = doc(
+        db,
+        "users",
+        currentUser.uid,
+        "programlar",
+        "anaProgram"
+    );
 
-    create();
-    openWeek(activeWeek);
+    onSnapshot(ref, async (snap) => {
+
+        if (snap.exists()) {
+
+            data = JSON.parse(snap.data().data);
+
+        } else {
+
+            await saveProgram();
+
+        }
+
+        create();
+        openWeek(activeWeek);
+
+    });
 
 });
+const logoutBtn = document.getElementById("logoutBtn");
+
+if (logoutBtn) {
+
+    logoutBtn.addEventListener("click", async () => {
+
+        await signOut(auth);
+
+        window.location.href = "login.html";
+
+    });
+
+}
 window.openWeek = openWeek;
 window.edit = edit;
 window.saveLesson = saveLesson;

@@ -306,6 +306,38 @@ color:white;
 background:#64748b;
 color:white;
 }
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.user-panel{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+#userEmail{
+    color:white;
+    font-size:15px;
+    font-weight:600;
+}
+
+#logoutBtn{
+    background:#d9534f;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#logoutBtn:hover{
+    background:#c9302c;
+}
 </style>
 
 </head>
@@ -318,7 +350,16 @@ color:white;
 <div class="container">
 
 
-<h1>Ders Programı</h1>
+<div class="header">
+
+    <h1>Ders Programı</h1>
+
+    <div class="user-panel">
+        <span id="userEmail">Yükleniyor...</span>
+        <button id="logoutBtn">Çıkış Yap</button>
+    </div>
+
+</div>
 
 <div id="progressBox" style="
 margin:20px 0;
