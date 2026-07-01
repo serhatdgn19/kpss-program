@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+
+<meta charset="UTF-8">
+<title>KPSS Ders Programı</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#111827;
+    font-family:Arial;
+    color:white;
+}
+
+
+.container{
+    width:95%;
+    margin:auto;
+}
+
+
+h1{
+    text-align:center;
+    margin:25px;
+}
+
+
+.tabs{
+
+display:flex;
+justify-content:center;
+gap:5px;
+flex-wrap:wrap;
+
+}
+
+
+
+.tabs button{
+
+background:#b56561;
+color:white;
+border:none;
+padding:12px 20px;
+cursor:pointer;
+font-weight:bold;
+
+}
+
+
+.tabs button.active{
+
+background:#d78300;
+
+}
+
+
+
+.week{
+
+display:none;
+
+}
+
+
+.week.active{
+
+display:block;
+
+}
+
+
+
+.title{
+
+background:#30241f;
+text-align:center;
+padding:15px;
+font-size:25px;
+font-weight:bold;
+
+}
+
+
+
+table{
+
+width:100%;
+border-collapse:collapse;
+table-layout:fixed;
+
+}
+
+
+th{
+
+background:#b56561;
+padding:15px;
+border:1px solid #ddd;
+
+}
+
+
+td{
+
+border:1px solid #ddd;
+height:110px;
+text-align:center;
+background:#252b38;
+cursor:pointer;
+word-wrap:break-word;
+
+}
+
+
+/* Gün isimleri sütunu */
+
+.day{
+
+width:14%;
+background:#b56561;
+font-weight:bold;
+
+}
+
+
+/* 3 ders sütunu */
+
+.lesson{
+
+width:28.66%;
+
+}
+
+
+
+.topic{
+
+color:#d78300;
+font-weight:bold;
+display:block;
+
+}
+
+
+
+.question{
+
+color:white;
+margin-top:10px;
+display:block;
+
+}
+.lessonName{
+
+font-size:18px;
+font-weight:bold;
+color:#fbbf24;
+margin-bottom:8px;
+
+}
+
+.lessonType{
+
+font-size:14px;
+color:#60a5fa;
+margin-bottom:8px;
+
+}
+
+.lessonNote{
+
+font-size:13px;
+color:#ddd;
+
+}
+
+
+.modal{
+
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0008;
+justify-content:center;
+align-items:center;
+
+}
+
+
+
+.box{
+
+background:#222;
+padding:25px;
+width:300px;
+
+}
+
+
+
+input{
+
+width:100%;
+padding:10px;
+margin:10px 0;
+
+}
+select,
+textarea{
+
+width:100%;
+padding:10px;
+margin:10px 0;
+font-size:15px;
+
+}
+
+
+
+.save{
+
+background:#d78300;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+
+}
+.cancel{
+
+margin-top:10px;
+background:#555;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+cursor:pointer;
+
+}
+
+.cancel:hover{
+
+background:#777;
+
+}
+.completedDay td{
+    background:#2e7d32 !important;
+    color:white;
+}
+
+.completedDay .day{
+    background:#1b5e20 !important;
+    font-weight:bold;
+}
+
+.completedDay .topic{
+    color:#ffe082 !important;
+}
+
+.completedDay .question{
+    color:white !important;
+}
+.lessonType{
+
+display:inline-block;
+padding:4px 10px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+margin:8px 0;
+
+}
+
+.konu{
+background:#2563eb;
+color:white;
+}
+
+.soru{
+background:#16a34a;
+color:white;
+}
+
+.tekrar{
+background:#9333ea;
+color:white;
+}
+
+.deneme{
+background:#ea580c;
+color:white;
+}
+
+.video{
+background:#dc2626;
+color:white;
+}
+
+.not{
+background:#64748b;
+color:white;
+}
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>Ders Programı</h1>
+
+<div id="progressBox" style="
+margin:20px 0;
+background:#1f2937;
+padding:15px;
+border-radius:10px;">
+
+<div style="
+width:100%;
+height:24px;
+background:#444;
+border-radius:20px;
+overflow:hidden;">
+
+<div id="progressFill" style="
+width:0%;
+height:100%;
+background:#2e7d32;
+transition:.4s;">
+</div>
+
+</div>
+
+<p id="progressText"
+style="margin-top:10px;text-align:center;font-weight:bold;">
+
+0 / 56 Gün Tamamlandı
+
+</p>
+
+</div>
+<div class="tabs">
+
+<button onclick="openWeek(0)" class="active">1.HAFTA</button>
+<button onclick="openWeek(1)">2.HAFTA</button>
+<button onclick="openWeek(2)">3.HAFTA</button>
+<button onclick="openWeek(3)">4.HAFTA</button>
+<button onclick="openWeek(4)">5.HAFTA</button>
+<button onclick="openWeek(5)">6.HAFTA</button>
+<button onclick="openWeek(6)">7.HAFTA</button>
+<button onclick="openWeek(7)">8.HAFTA</button>
+
+</div>
+
+
+<div id="weeks"></div><div style="margin:20px;background:#1f2937;padding:20px;border-radius:10px"><h2>📝 Hafta Notları</h2><textarea
+id="weekNote"
+oninput="saveWeekNote()"
+style="width:100%;height:180px;background:#111827;color:white;border:1px solid #555">
+</textarea><br><label><input
+type="checkbox"
+id="weekCompleted"
+onchange="saveWeekNote()"> Bu haftayı tamamladım</label></div>
+
+
+</div>
+
+
+
+
+<div class="modal" id="modal">
+
+
+<div class="box">
+
+
+<h3 id="modalTitle">Çalışma Bilgisi</h3>
+
+<input
+id="lesson"
+placeholder="Konu">
+
+<select id="type">
+
+<option value="">Çalışma Türü</option>
+
+<option>Konu Anlatımı</option>
+
+<option>Soru Çözümü</option>
+
+<option>Tekrar</option>
+
+<option>Deneme</option>
+
+<option>Video İzleme</option>
+
+<option>Not Çıkarma</option>
+
+</select>
+
+<textarea
+id="note"
+placeholder="Açıklama veya hedef..."
+style="
+width:100%;
+height:80px;
+margin-top:10px;
+padding:10px;
+"></textarea>
+
+
+
+<button class="save" onclick="saveLesson()">
+
+Kaydet
+
+</button>
+<button class="cancel" onclick="closeModal()">
+
+İptal
+
+</button>
+
+</div>
+
+</div>
+
+
+<script type="module" src="firebase.js"></script>
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
