@@ -76,10 +76,69 @@ async function loadUsers() {
     userList.innerHTML = "";
 
     const snapshot = await getDocs(collection(db, "users"));
+    document.getElementById("totalUsers").textContent =
+    snapshot.size;
+    let activeToday = 0;
 
-    snapshot.forEach((docSnap) => {
+let latestUser = null;
+let latestDate = null;
 
+let totalProgress = 0;
+let progressUsers = 0;
+
+    for (const docSnap of snapshot.docs) {
         const user = docSnap.data();
+
+// Son görülme kontrolü
+if (user.lastSeen) {
+
+    const lastSeen = user.lastSeen.toDate();
+
+    const today = new Date();
+
+    if (
+        lastSeen.getDate() === today.getDate() &&
+        lastSeen.getMonth() === today.getMonth() &&
+        lastSeen.getFullYear() === today.getFullYear()
+    ) {
+        activeToday++;
+    }
+
+    if (!latestDate || lastSeen > latestDate) {
+        latestDate = lastSeen;
+        latestUser = user;
+    }
+    const programSnap = await getDoc(
+    doc(db, "users", docSnap.id, "programlar", "anaProgram")
+);
+
+if (programSnap.exists()) {
+
+    const programData = JSON.parse(programSnap.data().data);
+
+    let completedDays = 0;
+
+    programData.forEach(week => {
+
+        week.lessons.forEach(day => {
+
+            if (day.every(x => x.done)) {
+                completedDays++;
+            }
+
+        });
+
+    });
+
+    const progress = Math.round((completedDays / 56) * 100);
+
+    totalProgress += progress;
+    progressUsers++;
+
+}
+
+}
+
 
         userList.innerHTML += `
 
@@ -90,6 +149,15 @@ async function loadUsers() {
             <small>${user.email}</small><br>
 
             <small><b>Rol:</b> ${user.role}</small>
+            <br><br>
+
+<button
+    class="viewProgramBtn"
+    data-uid="${docSnap.id}">
+    👁 Programı Gör
+</button>
+
+<hr>
 
             <hr>
 
@@ -115,8 +183,31 @@ async function loadUsers() {
 
         `;
 
+    };
+    document.getElementById("activeToday").textContent =
+    activeToday;
+    if (progressUsers > 0) {
+
+    document.getElementById("avgProgress").textContent =
+        "%" + Math.round(totalProgress / progressUsers);
+
+}
+
+if (latestUser) {
+
+    document.getElementById("lastLogin").textContent =
+        latestUser.displayName;
+
+}
+document.querySelectorAll(".viewProgramBtn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        loadProgramPreview(btn.dataset.uid);
+
     });
 
+});
     document.querySelectorAll("input[name='sourceUser']").forEach(radio => {
 
         radio.addEventListener("change", () => {
@@ -124,7 +215,7 @@ async function loadUsers() {
             sourceUid = radio.value;
 
             console.log("Kaynak:", sourceUid);
-        loadProgramPreview(sourceUid);
+        
 
         });
 
@@ -299,7 +390,8 @@ async function loadProgramPreview(uid) {
 
     if (!programSnap.exists()) {
 
-        container.innerHTML = "<p>Bu kullanıcıda program bulunamadı.</p>";
+       const content = document.getElementById("previewContent");
+content.innerHTML = "<p>Bu kullanıcıda program bulunamadı.</p>";
 
         return;
 
@@ -319,25 +411,84 @@ async function loadProgramPreview(uid) {
 
 function renderPreview() {
 
-    const header = document.getElementById("previewHeader");
     const weeks = document.getElementById("previewWeeks");
     const content = document.getElementById("previewContent");
 
-    if (!header || !weeks || !content) {
+if (!weeks || !content) {
     console.error("Preview alanları bulunamadı.");
     return;
 }
 
+
     weeks.innerHTML = "";
     content.innerHTML = "";
 
-    header.innerHTML = `
-        <h2>${previewUser.displayName}</h2>
+document.getElementById("previewName").textContent =
+    previewUser.displayName || "-";
 
-        <p>Mail : ${previewUser.email}</p>
+document.getElementById("previewMail").textContent =
+    previewUser.email || "-";
 
-        <p>Rol : ${previewUser.role}</p>
-    `;
+document.getElementById("previewRole").textContent =
+    previewUser.role || "-";
+    if (previewUser.lastSeen) {
+
+    const date = previewUser.lastSeen.toDate();
+
+    document.getElementById("previewLastSeen").textContent =
+        date.toLocaleString("tr-TR");
+
+} else {
+
+    document.getElementById("previewLastSeen").textContent =
+        "Hiç giriş yapmadı";
+
+}
+let completedLessons = 0;
+let totalLessons = 0;
+
+let completedDays = 0;
+let totalDays = 0;
+
+previewData.forEach(week => {
+
+    week.lessons.forEach(day => {
+
+        totalDays++;
+
+        if (day.every(x => x.done)) {
+            completedDays++;
+        }
+
+        day.forEach(lesson => {
+
+            totalLessons++;
+
+            if (lesson.done) {
+                completedLessons++;
+            }
+
+        });
+
+    });
+
+});
+const lessonPercent =
+    Math.round((completedLessons / totalLessons) * 100);
+
+const dayPercent =
+    Math.round((completedDays / totalDays) * 100);
+    document.getElementById("previewProgressFill").style.width =
+    lessonPercent + "%";
+
+document.getElementById("previewProgressText").textContent =
+    `${completedLessons} / ${totalLessons} Ders`;
+
+document.getElementById("previewDayProgressFill").style.width =
+    dayPercent + "%";
+
+document.getElementById("previewDayProgressText").textContent =
+    `${completedDays} / ${totalDays} Gün`;
 const currentWeek = previewData[previewWeek];
 
 if (!currentWeek) {

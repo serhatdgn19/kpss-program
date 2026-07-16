@@ -176,3 +176,44 @@
     background:#4caf50;
 
 }
+.stats{
+
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+
+    margin:20px 0;
+
+}
+
+.stat-card{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:18px;
+
+    text-align:center;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+.stat-card h3{
+
+    font-size:28px;
+
+    margin:0 0 8px;
+
+    color:#2563eb;
+
+}
+
+.stat-card span{
+
+    font-size:14px;
+
+    color:#666;
+
+}

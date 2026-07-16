@@ -380,9 +380,7 @@ color:white;
     <button id="logoutBtn">
         Çıkış Yap
     </button>
-
 </div>
-
 </div>
 
 <div id="progressBox" style="
@@ -504,10 +502,164 @@ Kaydet
 
 <script type="module" src="firebase.js"></script>
 <script type="module" src="app.js"></script>
+<script type="module" src="chat.js"></script>
 <footer class="footer">
     <div>KPSS Ders Programı <span class="version">v1.0</span></div>
     <div>© 2026 Serhat Doğan tarafından geliştirilmiştir.</div>
     <div>Tüm hakları saklıdır.</div>
 </footer>
+<!-- Sohbet Butonu -->
+<div id="chatWidget">
+
+    <button id="chatToggle">
+
+        💬
+
+        <span id="chatBadge" style="display:none;">0</span>
+
+    </button>
+
+    <div id="chatWindow">
+
+        <div id="chatHeader">
+
+            <span>💬 Sohbet</span>
+
+            <button id="chatClose">−</button>
+
+        </div>
+
+<div id="chatTabs">
+
+    <button
+        class="chatTab active"
+        data-tab="friends">
+
+        👥 Arkadaşlar
+
+    </button>
+
+    <button
+        class="chatTab"
+        data-tab="messages">
+
+        💬 Mesajlar
+
+    </button>
+
+</div>
+
+<div id="chatContent">
+
+<div id="friendsTab"
+    class="chatPage active">
+
+
+    <div style="display:flex;gap:10px;margin-bottom:15px;">
+
+        <button id="myFriendsBtn">
+            👥 Arkadaşlarım
+        </button>
+
+
+        <button id="addFriendBtn">
+            ➕ Arkadaş Ekle
+        </button>
+
+
+    </div>
+
+
+
+    <div id="myFriendsPage">
+
+
+        <div id="friendList">
+
+            Henüz arkadaşınız yok.
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <div id="addFriendPage" style="display:none;">
+
+
+        <input
+            type="text"
+            id="friendSearch"
+            placeholder="Kullanıcı ara...">
+
+
+        <button id="searchFriendBtn">
+
+            ARA
+
+        </button>
+
+
+
+        <div id="friendSearchResults">
+
+        </div>
+
+
+        <hr>
+
+
+        <div id="friendRequests">
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+<div id="messagesTab" class="chatPage active">
+
+    <div id="conversationList"></div>
+
+
+    <div class="chatHeaders">
+
+        <div class="chatTop">
+
+            <div id="chatUserName"></div>
+
+            <button id="closeChatBtn">✕</button>
+
+        </div>
+
+    </div>
+
+
+    <div id="chatBody">
+
+        <div id="messageBox"></div>
+
+    </div>
+
+
+    <div id="messageInputArea">
+
+        <input id="messageText">
+
+        <button id="sendMessageBtn">
+            Gönder
+        </button>
+
+    </div>
+
+</div>
+
+    </div>
+
+</div>
 </body>
 </html>

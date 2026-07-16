@@ -28,6 +28,29 @@
     <div class="left-panel">
 
         <h2>Kullanıcılar</h2>
+        <div class="stats">
+
+    <div class="stat-card">
+        <h3 id="totalUsers">0</h3>
+        <span>👥 Toplam Kullanıcı</span>
+    </div>
+
+    <div class="stat-card">
+        <h3 id="activeToday">0</h3>
+        <span>🟢 Bugün Aktif</span>
+    </div>
+
+    <div class="stat-card">
+        <h3 id="avgProgress">%0</h3>
+        <span>📚 Ortalama İlerleme</span>
+    </div>
+
+    <div class="stat-card">
+        <h3 id="lastLogin">-</h3>
+        <span>🕒 Son Giriş</span>
+    </div>
+
+</div>
 
         <input
             type="text"
@@ -48,23 +71,43 @@
 
     <div id="previewHeader">
 
-        <h2>Kullanıcı Seçilmedi</h2>
+    <h2 id="previewName">Kullanıcı Seçilmedi</h2>
 
-        <p>Mail :</p>
+    <p><b>Mail:</b> <span id="previewMail">-</span></p>
 
-        <p>Rol :</p>
+    <p><b>Rol:</b> <span id="previewRole">-</span></p>
 
-        <div id="previewProgress">
+    <p><b>Son Görülme:</b> <span id="previewLastSeen">-</span></p>
 
-            <div id="previewProgressFill"></div>
+    <hr>
 
-        </div>
+    <h3>📚 Ders İlerlemesi</h3>
 
-        <span id="previewProgressText">
-            %0
-        </span>
+    <div id="previewProgress">
+
+        <div id="previewProgressFill"></div>
 
     </div>
+
+    <span id="previewProgressText">
+        0 / 168 Ders
+    </span>
+
+    <br><br>
+
+    <h3>📅 Gün Tamamlama</h3>
+
+    <div id="previewDayProgress">
+
+        <div id="previewDayProgressFill"></div>
+
+    </div>
+
+    <span id="previewDayProgressText">
+        0 / 56 Gün
+    </span>
+
+</div>
 
     <div id="previewWeeks"></div>
 

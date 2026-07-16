@@ -1,5 +1,14 @@
 
-import { db, auth, doc, getDoc, setDoc, onSnapshot } from "./firebase.js";
+import {
+    db,
+    auth,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    onSnapshot,
+    serverTimestamp
+} from "./firebase.js";
 import {
     onAuthStateChanged,
     signOut
@@ -7,7 +16,7 @@ import {
 console.log("Firebase Auth hazır.");
 console.log(auth);
 let currentUser = null;
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
 
     if (!user) {
         window.location.href = "login.html";
@@ -15,6 +24,20 @@ onAuthStateChanged(auth, (user) => {
     }
 
     currentUser = user;
+    try {
+
+    await updateDoc(
+        doc(db, "users", user.uid),
+        {
+            lastSeen: serverTimestamp()
+        }
+    );
+
+} catch (error) {
+
+    console.error("lastSeen güncellenemedi:", error);
+
+}
 
     document.getElementById("userEmail").textContent = user.email;
 
@@ -483,4 +506,46 @@ if (logoutBtn) {
         await signOut(auth);
         window.location.href = "login.html";
     });
+    
+}
+/* ==========================
+   SOHBET PENCERESİ
+========================== */
+
+const chatToggle = document.getElementById("chatToggle");
+const chatWindow = document.getElementById("chatWindow");
+const chatClose = document.getElementById("chatClose");
+
+if(chatToggle && chatWindow){
+
+chatToggle.addEventListener("click",()=>{
+
+    if(chatWindow.style.display==="flex"){
+
+        chatWindow.style.display="none";
+
+    }else{
+
+        chatWindow.style.display="flex";
+
+        if(window.updateChatBadge){
+
+            window.updateChatBadge(0);
+
+        }
+
+    }
+
+});
+
+}
+window.chatWindow = chatWindow;
+if(chatClose){
+
+    chatClose.addEventListener("click",()=>{
+
+        chatWindow.style.display="none";
+
+    });
+
 }

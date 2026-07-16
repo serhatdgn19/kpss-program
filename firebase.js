@@ -1,7 +1,10 @@
 // Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { 
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
     getFirestore,
@@ -9,9 +12,19 @@ import {
     getDoc,
     getDocs,
     setDoc,
+    addDoc,
+    updateDoc,
+    deleteDoc,
     onSnapshot,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
     serverTimestamp,
-    collection
+    arrayUnion,
+    arrayRemove,
+    writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -36,7 +49,18 @@ export {
     getDoc,
     getDocs,
     setDoc,
+    addDoc,
+    updateDoc,
+    deleteDoc,
     onSnapshot,
+    collection,
+    query,
+    where,
+    orderBy,
+    limit,
     serverTimestamp,
-    collection
+    arrayUnion,
+    arrayRemove,
+    writeBatch,
+    onAuthStateChanged
 };
