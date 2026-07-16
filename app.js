@@ -176,13 +176,13 @@ days.forEach((day,d)=>{
 
 html+=`
 
-<tr class="${data[w].lessons[d][0].done ? 'completedDay' : ''}">
+<tr class="${data[w].lessons[d].every(x => x.done) ? 'completedDay' : ''}">
 
 <td class="day">
 
 <input
 type="checkbox"
-${data[w].lessons[d][0].done ? "checked" : ""}
+${data[w].lessons[d].every(x => x.done) ? "checked" : ""}
 onchange="toggleDay(${w},${d})">
 
 <br><br>
@@ -202,11 +202,18 @@ let x=data[w].lessons[d][l];
 
 html+=`
 
-<td class="lesson" onclick="edit(${w},${d},${l})">
+<td class="lesson ${x.done ? 'completedLesson' : ''}" onclick="edit(${w},${d},${l})">
+
+<div class="lessonHeader">
+
+<input
+type="checkbox"
+${x.done ? "checked" : ""}
+onclick="event.stopPropagation(); toggleLesson(${w},${d},${l})">
 
 <div class="lessonName">
-
 ${x.lesson || "KONU"}
+</div>
 
 </div>
 
@@ -384,11 +391,24 @@ async function saveWeekNote(){
 
 async function toggleDay(w,d){
 
-    let value = !data[w].lessons[d][0].done;
+    let value = !data[w].lessons[d].every(x => x.done);
 
     for(let i=0;i<3;i++){
         data[w].lessons[d][i].done = value;
     }
+
+    await saveProgram();
+
+    create();
+    openWeek(activeWeek);
+
+}
+async function toggleLesson(w,d,l){
+
+    // Dersi tersine çevir
+    data[w].lessons[d][l].done =
+        !data[w].lessons[d][l].done;
+
 
     await saveProgram();
 
@@ -405,8 +425,8 @@ function updateProgress(){
 
         week.lessons.forEach(day=>{
 
-            if(day[0].done)
-                completed++;
+            if(day.every(x => x.done))
+    completed++;
 
         });
 
@@ -455,6 +475,7 @@ window.saveLesson = saveLesson;
 window.closeModal = closeModal;
 window.saveWeekNote = saveWeekNote;
 window.toggleDay = toggleDay;
+window.toggleLesson = toggleLesson;
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {

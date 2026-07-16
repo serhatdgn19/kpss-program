@@ -102,3 +102,13 @@
     color:#f59e0b;
     font-weight:700;
 }
+
+.lessonHeader input{
+
+    cursor:url(cursor.cur), auto;
+}
+.completedLesson{
+    background:#b8f5b5 !important;
+    border:2px solid #38a169;
+    transition:0.25s;
+}
