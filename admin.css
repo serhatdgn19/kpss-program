@@ -33,7 +33,7 @@
 }
 
 .user-card{
-    background:#ffffff;
+    background:#e47a7a;
     border-radius:10px;
     padding:18px;
     margin-bottom:15px;
@@ -69,6 +69,7 @@
 
 .left-panel{
     width:350px;
+    color:rgb(19, 8, 8);
 }
 
 .right-panel{
@@ -103,14 +104,14 @@
 .day-card{
     margin:15px 0;
     padding:10px;
-    border:1px solid #ddd;
+    border:1px solid #663609;
     border-radius:8px;
 }
 
 .lesson-card{
     margin:8px 0;
     padding:8px;
-    background:#f8f8f8;
+    background:#e47a7a;
     border-radius:6px;
 }
 #previewHeader{
@@ -188,7 +189,7 @@
 
 .stat-card{
 
-    background:#fff;
+    background:#e47a7a;
 
     border-radius:12px;
 
