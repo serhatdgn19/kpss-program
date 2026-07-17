@@ -208,7 +208,7 @@
 
     height:500px;
 
-    background:#ffffff;
+    background:#444040;
 
     border-radius:16px;
 
@@ -783,5 +783,449 @@
         opacity:1;
 
     }
+
+}
+/* ========================= */
+/* CHAT KOYU TEMA DÜZENLEME */
+/* ========================= */
+
+#chatWindow{
+    background:#111827;
+    color:white;
+}
+
+
+/* Sekmeler */
+
+#chatTabs{
+    border-bottom:1px solid #374151;
+}
+
+.chatTab{
+    background:#1f2937;
+    color:#d1d5db;
+}
+
+.chatTab.active{
+    background:#3b82f6;
+    color:white;
+}
+
+
+/* Sayfalar */
+
+.chatPage{
+    background:#111827;
+    color:white;
+}
+
+
+/* Arkadaş listesi */
+
+.friendItem{
+    background:#1f2937;
+    color:white;
+    box-shadow:none;
+    border:1px solid #374151;
+}
+
+
+.friendItem:hover{
+    background:#374151;
+}
+
+
+/* İsimler */
+
+.friendName,
+.friendInfo,
+.friendInfo div,
+.conversationUser{
+    color:white;
+}
+
+
+.friendInfo small,
+.friendItem small{
+    color:#9ca3af;
+}
+
+
+/* Mesaj alanı */
+
+#chatBody{
+    background:#111827;
+}
+
+
+/* Üst başlık */
+
+.chatHeaders,
+.chatTop{
+    background:#1f2937;
+    color:white;
+    border-bottom:1px solid #374151;
+}
+
+
+/* Konuşma listesi */
+
+.conversationItem{
+    background:#1f2937;
+    color:white;
+    border-bottom:1px solid #374151;
+}
+
+
+.conversationItem:hover{
+    background:#374151;
+}
+
+
+.lastMessage{
+    color:#9ca3af;
+}
+
+
+/* Mesaj kutuları */
+
+.otherMessage{
+    background:#374151;
+    color:white;
+}
+
+
+.myMessage{
+    background:#28bd15;
+}
+
+
+/* Mesaj yazma alanı */
+
+#messageBox{
+    background:#1f2937;
+}
+
+
+#messageBox input,
+#messageBox textarea{
+    background:#111827;
+    color:white;
+    border:1px solid #374151;
+}
+
+
+/* Silme butonu */
+
+.deleteFriendBtn{
+    background:#374151;
+    color:white;
+}
+
+
+.deleteFriendBtn:hover{
+    background:#7f1d1d;
+}
+/* ========================= */
+/* ANA SAYFA KOYU TEMA */
+/* ========================= */
+
+
+body{
+    background:#111827;
+    color:#f3f4f6;
+}
+
+
+/* Ana container */
+
+.container{
+    background:#1f2937;
+    color:#f3f4f6;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+
+/* Başlıklar */
+
+h1,h2,h3{
+    color:#f9fafb;
+}
+
+
+/* Haftalar sekmesi */
+
+.tabs{
+    background:#111827;
+}
+
+
+.tab,
+.weekTab{
+    background:#374151;
+    color:#d1d5db;
+    border:none;
+}
+
+
+.tab:hover,
+.weekTab:hover{
+    background:#4b5563;
+}
+
+
+.tab.active,
+.weekTab.active{
+    background:#f59e0b;
+    color:white;
+}
+
+
+/* Ders tablosu */
+
+table{
+    background:#1f2937;
+    color:white;
+    border-collapse:collapse;
+}
+
+
+th{
+    background:#111827;
+    color:#f59e0b;
+}
+
+
+td{
+    background:#1f2937;
+    border-color:#374151;
+    color:#f3f4f6;
+}
+
+
+tr:hover td{
+    background:#374151;
+}
+
+
+/* Ders kutuları */
+
+.lessonName,
+.lessonType,
+.lessonNote{
+    color:#f3f4f6;
+}
+
+
+/* Inputlar */
+
+input,
+textarea,
+select{
+    background:#111827;
+    color:white;
+    border:1px solid #374151;
+}
+
+
+input:focus,
+textarea:focus,
+select:focus{
+    outline:none;
+    border-color:#f59e0b;
+}
+
+
+/* Not alanı */
+
+.noteBox,
+.weekNote{
+    background:#1f2937;
+    color:white;
+    border:1px solid #374151;
+}
+
+
+/* Butonlar */
+
+button{
+    background:#f59e0b;
+    color:white;
+}
+
+
+button:hover{
+    background:#d97706;
+}
+
+
+/* İlerleme kutusu */
+
+#progressBox{
+    background:#1f2937;
+    border:1px solid #374151;
+}
+
+
+#progressFill{
+    background:#f59e0b;
+}
+
+
+/* Footer */
+
+.footer{
+    color:#9ca3af;
+}
+/* ========================= */
+/* ARKADAŞ BUTONLARI */
+/* ========================= */
+
+.chatTab{
+    padding:16px 12px;
+    font-size:16px;
+    font-weight:600;
+    border-radius:0;
+    min-height:55px;
+}
+
+
+.chatTab:hover{
+    background:#374151;
+    color:white;
+}
+
+
+.chatTab.active{
+    background:#f59e0b;
+    color:white;
+}
+/* ========================= */
+/* ARKADAŞ BUTONLARI */
+/* ========================= */
+
+#myFriendsBtn,
+#addFriendBtn{
+
+    width:100%;
+
+    padding:15px 20px;
+
+    margin-bottom:10px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#1f2937;
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    border:1px solid #374151;
+
+}
+
+
+#myFriendsBtn:hover,
+#addFriendBtn:hover{
+
+    background:#374151;
+
+    transform:translateY(-2px);
+
+}
+
+
+/* aktif görünüm */
+
+#myFriendsBtn.active,
+#addFriendBtn.active{
+
+    background:#f59e0b;
+
+    color:white;
+
+    border-color:#f59e0b;
+
+}
+/* ========================= */
+/* ARKADAŞ SİLME POPUP KOYU TEMA */
+/* ========================= */
+
+.modalOverlay{
+
+    background:rgba(0,0,0,.65);
+
+}
+
+
+.modalBox{
+
+    background:#1f2937;
+
+    color:white;
+
+    border:1px solid #374151;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.5);
+
+}
+
+
+.modalBox h3{
+
+    color:#f9fafb;
+
+}
+
+
+.modalBox p{
+
+    color:#d1d5db;
+
+}
+
+
+/* Vazgeç butonu */
+
+#cancelDelete{
+
+    background:#374151;
+
+    color:white;
+
+}
+
+
+#cancelDelete:hover{
+
+    background:#4b5563;
+
+}
+
+
+/* Sil butonu */
+
+#confirmDelete{
+
+    background:#dc2626;
+
+    color:white;
+
+}
+
+
+#confirmDelete:hover{
+
+    background:#b91c1c;
 
 }

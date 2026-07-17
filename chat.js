@@ -554,7 +554,7 @@ async function loadFriends(){
         }
         
 
-        let html="<h4>Arkadaşlarım</h4>";
+        let html="<h4></h4>";
 
         for(const uid of friendIds){
 
