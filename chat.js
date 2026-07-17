@@ -1,6 +1,17 @@
+let conversationPresenceListeners = [];
+let deleteTargetUid = null;
+import {
+    startPresence,
+    watchUserPresence
+} from "./presence.js";
 import {
     db,
     auth,
+    rtdb,
+    ref,
+    set,
+    onDisconnect,
+    onValue,
     collection,
     getDocs,
     addDoc,
@@ -18,6 +29,7 @@ import {
     orderBy
 } from "./firebase.js";
 const tabs = document.querySelectorAll(".chatTab");
+
 
 const pages = document.querySelectorAll(".chatPage");
 let activeChatId = null;
@@ -71,6 +83,56 @@ async function searchUsers() {
     resultBox.innerHTML = "Aranıyor...";
 
     const snapshot = await getDocs(collection(db, "users"));
+    const currentUser = auth.currentUser;
+
+
+const friendSnap = await getDocs(
+    query(
+        collection(db,"friends"),
+        where(
+            "users",
+            "array-contains",
+            currentUser.uid
+        )
+    )
+);
+
+
+const requestSnap = await getDocs(
+    query(
+        collection(db,"friendRequests"),
+        where("fromUid","==",currentUser.uid),
+        where("status","==","pending")
+    )
+);
+
+
+let friendIds = [];
+
+friendSnap.forEach(doc=>{
+
+    const data = doc.data();
+
+    const friendUid = data.users.find(
+        uid => uid !== currentUser.uid
+    );
+
+    if(friendUid){
+        friendIds.push(friendUid);
+    }
+
+});
+
+
+let requestIds = [];
+
+requestSnap.forEach(doc=>{
+
+    requestIds.push(
+        doc.data().toUid
+    );
+
+});
 
     let html = "";
 
@@ -90,11 +152,34 @@ async function searchUsers() {
 
                     <small>${user.email}</small><br>
 
-                  <button
-    class="addFriendBtn"
-    data-uid="${docSnap.id}">
-    ➕ Arkadaş Ekle
-</button>
+${
+friendIds.includes(docSnap.id)
+
+?
+
+`<button disabled>
+✅ Arkadaşınız
+</button>`
+
+:
+
+requestIds.includes(docSnap.id)
+
+?
+
+`<button disabled>
+⏳ İstek Gönderildi
+</button>`
+
+:
+
+`<button
+class="addFriendBtn"
+data-uid="${docSnap.id}">
+➕ Arkadaş Ekle
+</button>`
+
+}
 
                     <hr>
 
@@ -130,6 +215,7 @@ async function sendFriendRequest(targetUid) {
 
     if (!currentUser) return;
 
+
     if (currentUser.uid === targetUid) {
 
         alert("Kendinize arkadaşlık isteği gönderemezsiniz.");
@@ -141,21 +227,78 @@ async function sendFriendRequest(targetUid) {
 
     try {
 
-        await addDoc(collection(db, "friendRequests"), {
+
+        // Zaten arkadaş mı kontrol et
+        const friendQuery = query(
+            collection(db,"friends"),
+            where(
+                "users",
+                "array-contains",
+                currentUser.uid
+            )
+        );
+
+
+        const friendSnap = await getDocs(friendQuery);
+
+
+        for(const item of friendSnap.docs){
+
+            const data = item.data();
+
+            if(data.users.includes(targetUid)){
+
+                alert("Bu kişi zaten arkadaşınız.");
+
+                return;
+
+            }
+
+        }
+
+
+
+        // Daha önce istek gönderilmiş mi kontrol et
+        const requestQuery = query(
+            collection(db,"friendRequests"),
+            where("fromUid","==",currentUser.uid),
+            where("toUid","==",targetUid),
+            where("status","==","pending")
+        );
+
+
+        const requestSnap = await getDocs(requestQuery);
+
+
+        if(!requestSnap.empty){
+
+            alert("Bu kişiye zaten arkadaşlık isteği gönderdiniz.");
+
+            return;
+
+        }
+
+
+
+        // Yeni istek oluştur
+        await addDoc(collection(db,"friendRequests"), {
 
             fromUid: currentUser.uid,
 
             toUid: targetUid,
 
-            status: "pending",
+            status:"pending",
 
-            createdAt: serverTimestamp()
+            createdAt:serverTimestamp()
 
         });
 
+
         alert("✅ Arkadaşlık isteği gönderildi.");
 
-    } catch (error) {
+
+    }
+    catch(error){
 
         console.error(error);
 
@@ -182,7 +325,8 @@ async function loadFriendRequests(){
     );
 
 
-    const snapshot = await getDocs(q);
+    onSnapshot(q, async(snapshot)=>{
+
 
 
     if(snapshot.empty){
@@ -221,15 +365,23 @@ async function loadFriendRequests(){
 
                 <br>
 
-                <button 
-                class="acceptFriend"
-                data-id="${item.id}"
-                data-user="${request.fromUid}">
+<button 
+class="acceptFriend"
+data-id="${item.id}"
+data-user="${request.fromUid}">
 
-                Kabul Et
+Kabul Et
 
-                </button>
+</button>
 
+
+<button 
+class="rejectFriend"
+data-id="${item.id}">
+
+Reddet
+
+</button>
             </div>
 
             <hr>
@@ -242,6 +394,7 @@ async function loadFriendRequests(){
 
 
     friendList.innerHTML = html;
+    
 
 
     document.querySelectorAll(".acceptFriend")
@@ -260,7 +413,27 @@ async function loadFriendRequests(){
         });
 
 
+  
     });
+
+
+
+    document.querySelectorAll(".rejectFriend")
+.forEach(btn=>{
+
+
+    btn.addEventListener("click",()=>{
+
+
+        rejectFriend(
+            btn.dataset.id
+        );
+
+
+    });
+  });
+
+});
 
 }
 async function acceptFriend(requestId, friendUid){
@@ -284,12 +457,9 @@ async function acceptFriend(requestId, friendUid){
         });
 
 
-        await updateDoc(
-            doc(db,"friendRequests",requestId),
-            {
-                status:"accepted"
-            }
-        );
+await deleteDoc(
+    doc(db,"friendRequests",requestId)
+);
 
 
         alert("✅ Arkadaş eklendi.");
@@ -302,9 +472,37 @@ async function acceptFriend(requestId, friendUid){
 
     } catch(error){
 
-        console.error(error);
+    console.error("ARKADAŞ EKLEME HATASI:", error.code, error.message);
 
-        alert("❌ Arkadaş eklenemedi.");
+    alert(
+        "Hata: " + error.code
+    );
+
+}
+
+}
+async function rejectFriend(requestId){
+
+    console.log("REDDİT TIKLANDI:", requestId);
+
+
+    if(!confirm("Bu arkadaşlık isteği reddedilsin mi?"))
+        return;
+
+
+    try{
+
+        await deleteDoc(
+            doc(db,"friendRequests",requestId)
+        );
+
+
+        alert("❌ Arkadaşlık isteği reddedildi.");
+
+    }
+    catch(error){
+
+        console.error("REDDETME HATASI:", error);
 
     }
 
@@ -315,9 +513,7 @@ async function loadFriends(){
 
     if(!currentUser) return;
 
-
     const friendList = document.getElementById("friendList");
-
 
     const q = query(
         collection(db,"friends"),
@@ -328,132 +524,169 @@ async function loadFriends(){
         )
     );
 
+    onSnapshot(q, async(snap)=>{
 
-    const snap = await getDocs(q);
+        console.log("ARKADAŞ KAYIT SAYISI:", snap.size);
 
+        let friendIds = [];
 
-    console.log("ARKADAŞ KAYIT SAYISI:", snap.size);
+        snap.forEach(docSnap=>{
 
+            const data = docSnap.data();
 
-    let friendIds = [];
+            const friendUid = data.users.find(
+                uid => uid !== currentUser.uid
+            );
 
+            if(friendUid){
+                friendIds.push(friendUid);
+            }
 
-    snap.forEach(docSnap=>{
+        });
 
-        const data = docSnap.data();
+        if(friendIds.length===0){
 
-        console.log("ARKADAŞ DATA:", data);
+            friendList.innerHTML="Henüz arkadaşınız yok.";
+            
 
+            return;
 
-        const friendUid = data.users.find(
-            uid => uid !== currentUser.uid
+        }
+        
+
+        let html="<h4>Arkadaşlarım</h4>";
+
+        for(const uid of friendIds){
+
+            const userSnap = await getDoc(
+                doc(db,"users",uid)
+            );
+
+            if(userSnap.exists()){
+
+const user = userSnap.data();
+
+html += `
+<div class="friendItem">
+
+<span
+class="friendName"
+data-uid="${uid}">
+
+    <span
+    id="status-dot-${uid}"
+    class="status offline">
+    </span>
+
+    <span class="friendInfo">
+
+        <strong>
+            ${user.displayName || user.email}
+        </strong>
+
+        <small id="status-text-${uid}">
+            Çevrimdışı
+        </small>
+
+    </span>
+
+</span>
+
+<button
+    class="deleteFriendBtn"
+    data-uid="${uid}"
+    title="Arkadaşı sil">
+
+    <span>🗑</span>
+
+</button>
+
+</div>
+`;
+            }
+        }
+
+        friendList.innerHTML = html;
+        // Presence dinlemeleri başlat
+friendIds.forEach(uid=>{
+
+    const unsubscribe = watchUserPresence(uid,(status)=>{
+        console.log(
+    "MESAJ LİSTESİ PRESENCE:",
+    uid,
+    status
+);
+
+        const dot = document.getElementById(
+            `status-dot-${uid}`
+        );
+
+        const text = document.getElementById(
+            `status-text-${uid}`
         );
 
 
-        if(friendUid){
+        if(!dot || !text){
 
-            friendIds.push(friendUid);
+    console.log(
+        "STATUS ELEMENT BULUNAMADI:",
+        uid,
+        dot,
+        text
+    );
+
+    return;
+
+}
+
+
+        if(status.online){
+
+            dot.classList.remove("offline");
+            dot.classList.add("online");
+
+            text.innerText="Çevrimiçi";
 
         }
+        else{
+
+            dot.classList.remove("online");
+            dot.classList.add("offline");
+
+            text.innerText="Çevrimdışı";
+
+        }
+
 
     });
 
+});
 
-    console.log("FRIEND IDS:", friendIds);
+        document.querySelectorAll(".friendName")
+        .forEach(item=>{
 
+            item.addEventListener("click",()=>{
 
+                openChat(item.dataset.uid);
 
-    if(friendIds.length === 0){
+            });
 
-        friendList.innerHTML =
-        "Henüz arkadaşınız yok.";
+        });
 
-        return;
+        document.querySelectorAll(".deleteFriendBtn")
+        .forEach(btn=>{
 
-    }
+            btn.addEventListener("click",(e)=>{
 
+                e.stopPropagation();
 
+                deleteFriend(btn.dataset.uid);
 
-    let html = "<h4>Arkadaşlarım</h4>";
-
-
-
-    for(const uid of friendIds){
-
-
-        const userSnap = await getDoc(
-            doc(db,"users",uid)
-        );
-
-
-        if(userSnap.exists()){
-
-            const user = userSnap.data();
-
-
-            html += `
-
-            <div class="friendItem">
-
-                <span 
-                class="friendName"
-                data-uid="${uid}">
-                
-                👤 ${user.displayName}
-
-                </span>
-
-
-                <button
-                class="deleteFriendBtn"
-                data-uid="${uid}">
-                
-                🗑
-
-                </button>
-
-            </div>
-
-            `;
-
-        }
-
-    }
-
-
-
-    friendList.innerHTML = html;
-
-
-
-    document.querySelectorAll(".friendName")
-    .forEach(item=>{
-
-        item.addEventListener("click",()=>{
-
-            openChat(item.dataset.uid);
+            });
 
         });
 
     });
-
-
-
-    document.querySelectorAll(".deleteFriendBtn")
-    .forEach(btn=>{
-
-
-        btn.addEventListener("click",(e)=>{
-
-            e.stopPropagation();
-
-            deleteFriend(btn.dataset.uid);
-
-        });
-
-
-    });
-
 
 }
 async function deleteFriend(friendUid){
@@ -462,7 +695,8 @@ async function deleteFriend(friendUid){
 
     if(!currentUser) return;
 
-    if(!confirm("Bu arkadaş silinsin mi?")) return;
+ openDeleteModal(friendUid);
+return;
 
 
     const q = query(
@@ -573,7 +807,13 @@ catch(error){
 
 
     const user=userSnap.data();
+const statusClass = user.online
+? "online"
+: "offline";
 
+const statusText = user.online
+? "Çevrimiçi"
+: "Çevrimdışı";
 
 
     document
@@ -663,13 +903,6 @@ async function markMessagesAsRead(){
     }
 
 }
-console.log("activeChatId:", activeChatId);
-console.log(
-    "Path:",
-    "chats",
-    activeChatId,
-    "messages"
-);
 function loadMessages(){
 
     if(!activeChatId) return;
@@ -995,6 +1228,7 @@ let html="";
 
 
             const user=userSnap.data();
+            
 
 console.log("MESAJ OKUMA DENEMESİ:", chatDoc.id);
 const messagesSnap = await getDocs(
@@ -1062,9 +1296,22 @@ data-uid="${otherUid}">
 
 <div class="conversationHeader">
 
-<strong>
-👤 ${user.displayName}
-</strong>
+<div class="conversationUser">
+
+    <span
+    id="chat-status-dot-${otherUid}"
+    class="status offline">
+    </span>
+
+    <strong>
+        ${user.displayName || user.email}
+    </strong>
+
+    <small id="chat-status-text-${otherUid}">
+        Çevrimdışı
+    </small>
+
+</div>
 ${unread > 0 ? `<span class="unreadBadge">${unread}</span>` : ""}
 
 <span>
@@ -1089,9 +1336,60 @@ ${lastMessage || "Yeni sohbet"}
 
     }
 
+conversationPresenceListeners.forEach(unsubscribe=>{
+    unsubscribe();
+});
 
+conversationPresenceListeners=[];
     list.innerHTML=html;
+document
+.querySelectorAll(".conversationItem")
+.forEach(item=>{
 
+
+    const uid = item.dataset.uid;
+
+
+    const unsubscribe = watchUserPresence(uid,(status)=>{
+
+
+const dot =
+document.getElementById(
+    `chat-status-dot-${uid}`
+);
+
+
+const text =
+document.getElementById(
+    `chat-status-text-${uid}`
+);
+
+
+        if(!dot || !text) return;
+
+
+        if(status.online){
+
+            dot.classList.remove("offline");
+            dot.classList.add("online");
+
+            text.innerText="Çevrimiçi";
+
+        }else{
+
+            dot.classList.remove("online");
+            dot.classList.add("offline");
+
+            text.innerText="Çevrimdışı";
+
+        }
+
+
+    });
+    conversationPresenceListeners.push(unsubscribe);
+
+
+});
 
 
     document
@@ -1119,7 +1417,17 @@ document.querySelector(".chatHeaders").style.display = "none";
 document.getElementById("messageBox").style.display = "none";
 
 document.getElementById("messageInputArea").style.display = "none";
-onAuthStateChanged(auth,()=>{
+onAuthStateChanged(auth, async(user)=>{
+
+    if(!user) return;
+await startPresence();
+
+    await updateDoc(
+        doc(db,"users",user.uid),
+        {
+            online:true
+        }
+    );
 
     loadFriendRequests();
 
@@ -1129,7 +1437,10 @@ onAuthStateChanged(auth,()=>{
 
     listenUnreadMessages();
 
+    
+
 });
+
 function listenUnreadMessages(){
 
 
@@ -1202,6 +1513,9 @@ updateChatBadge(totalUnread);
 
 
 }
+
+
+
 const closeChatBtn =
 document.getElementById("closeChatBtn");
 
@@ -1245,10 +1559,112 @@ document.getElementById("myFriendsPage").style.display="none";
 
 document.getElementById("addFriendPage").style.display="block";
 
-
-loadFriendRequests();
-
-
 };
+
+}
+window.addEventListener("beforeunload", async () => {
+
+    if(!auth.currentUser) return;
+
+    try{
+
+        await updateDoc(
+            doc(db,"users",auth.currentUser.uid),
+            {
+                online:false,
+                lastSeen:serverTimestamp()
+            }
+        );
+
+    }catch(e){
+        console.log(e);
+    }
+
+});
+function openDeleteModal(uid){
+
+    deleteTargetUid = uid;
+
+    document
+        .getElementById("deleteFriendModal")
+        .style.display = "flex";
+
+}
+
+
+function closeDeleteModal(){
+
+    document
+        .getElementById("deleteFriendModal")
+        .style.display = "none";
+
+    deleteTargetUid = null;
+
+}
+const confirmDeleteBtn =
+document.getElementById("confirmDelete");
+
+
+if(confirmDeleteBtn){
+
+    confirmDeleteBtn.addEventListener("click", async()=>{
+
+        if(!deleteTargetUid) return;
+
+
+        const currentUser = auth.currentUser;
+
+
+        const q = query(
+            collection(db,"friends"),
+            where(
+                "users",
+                "array-contains",
+                currentUser.uid
+            )
+        );
+
+
+        const snap = await getDocs(q);
+
+
+        for(const item of snap.docs){
+
+            const data = item.data();
+
+
+            if(data.users.includes(deleteTargetUid)){
+
+                await deleteDoc(item.ref);
+
+            }
+
+        }
+
+
+        closeDeleteModal();
+
+        loadFriends();
+
+        loadConversations();
+
+
+    });
+
+}
+
+
+
+const cancelDeleteBtn =
+document.getElementById("cancelDelete");
+
+
+if(cancelDeleteBtn){
+
+    cancelDeleteBtn.addEventListener("click",()=>{
+
+        closeDeleteModal();
+
+    });
 
 }

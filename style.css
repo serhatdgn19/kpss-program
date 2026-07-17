@@ -552,3 +552,236 @@
     gap:10px;
     flex-shrink:0;
 }
+.status{
+
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:8px;
+
+}
+
+.status.online{
+
+    background:#22c55e;
+
+}
+
+.status.offline{
+
+    background:#777;
+
+}
+
+.friendItem small{
+
+    display:block;
+    margin-left:18px;
+    color:#bbb;
+    font-size:12px;
+
+}
+.conversationUser{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+
+.conversationUser small{
+    font-size:12px;
+}
+.friendName{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+}
+
+
+.friendInfo{
+    display:flex;
+    flex-direction:column;
+}
+
+
+.friendInfo small{
+    font-size:12px;
+}
+.deleteFriendBtn{
+
+    width:36px;
+    height:36px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#f1f1f1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    font-size:16px;
+
+    transition:0.25s ease;
+
+}
+
+
+.deleteFriendBtn:hover{
+
+    background:#ffdddd;
+
+    transform:scale(1.08);
+
+}
+
+
+.deleteFriendBtn span{
+
+    pointer-events:none;
+
+}
+.friendItem{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:10px 12px;
+
+    margin-bottom:8px;
+
+    background:#ffffff;
+
+    border-radius:12px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+
+}
+
+
+.friendItem:hover{
+
+    background:#fafafa;
+
+}
+.modalOverlay{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:9999;
+
+}
+
+
+
+.modalBox{
+
+    background:white;
+
+    width:320px;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+
+    text-align:center;
+
+    animation:modalShow .2s ease;
+
+}
+
+
+
+.modalBox h3{
+
+    margin-top:0;
+
+}
+
+
+
+.modalButtons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:15px;
+
+    margin-top:20px;
+
+}
+
+
+
+.modalButtons button{
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+}
+
+
+
+#cancelDelete{
+
+    background:#ddd;
+
+}
+
+
+
+#confirmDelete{
+
+    background:#e74c3c;
+
+    color:white;
+
+}
+
+
+
+@keyframes modalShow{
+
+    from{
+
+        transform:scale(.8);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}

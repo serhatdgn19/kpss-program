@@ -1,6 +1,13 @@
 // Firebase SDK
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import {
+    getDatabase,
+    ref,
+    set,
+    onDisconnect,
+    onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 import { 
     getAuth,
     onAuthStateChanged
@@ -30,6 +37,7 @@ import {
 const firebaseConfig = {
     apiKey: "AIzaSyBvH4Pk8haPo8QCehMmitqNT0QD0pU5kD0",
     authDomain: "kpss-781ac.firebaseapp.com",
+    databaseURL: "https://kpss-781ac-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "kpss-781ac",
     storageBucket: "kpss-781ac.firebasestorage.app",
     messagingSenderId: "1034711277352",
@@ -40,11 +48,19 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 const auth = getAuth(app);
-
+const rtdb = getDatabase(
+    app,
+    "https://kpss-781ac-default-rtdb.europe-west1.firebasedatabase.app"
+);
 
 export {
     db,
     auth,
+    rtdb,
+    ref,
+    set,
+    onDisconnect,
+    onValue,
     doc,
     getDoc,
     getDocs,

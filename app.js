@@ -13,6 +13,9 @@ import {
     onAuthStateChanged,
     signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+    startPresence
+} from "./presence.js";
 console.log("Firebase Auth hazır.");
 console.log(auth);
 let currentUser = null;
@@ -24,6 +27,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     currentUser = user;
+    await startPresence();
     try {
 
     await updateDoc(
