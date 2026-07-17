@@ -150,7 +150,7 @@ requestSnap.forEach(doc=>{
 
                     <strong>${user.displayName}</strong><br>
 
-                    <small>${user.email}</small><br>
+                    
 
 ${
 friendIds.includes(docSnap.id)

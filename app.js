@@ -42,8 +42,20 @@ onAuthStateChanged(auth, async (user) => {
     console.error("lastSeen güncellenemedi:", error);
 
 }
+const userRef = doc(db,"users",user.uid);
+const userSnap = await getDoc(userRef);
 
-    document.getElementById("userEmail").textContent = user.email;
+if(userSnap.exists()){
+
+    document.getElementById("userEmail").textContent =
+        userSnap.data().displayName || user.email;
+
+}else{
+
+    document.getElementById("userEmail").textContent =
+        user.email;
+
+}
 
     const ref = doc(
         db,

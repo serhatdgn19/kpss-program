@@ -903,7 +903,7 @@
 /* Mesaj yazma alanı */
 
 #messageBox{
-    background:#1f2937;
+    background:#111827;
 }
 
 
@@ -1155,77 +1155,5 @@ button:hover{
     color:white;
 
     border-color:#f59e0b;
-
-}
-/* ========================= */
-/* ARKADAŞ SİLME POPUP KOYU TEMA */
-/* ========================= */
-
-.modalOverlay{
-
-    background:rgba(0,0,0,.65);
-
-}
-
-
-.modalBox{
-
-    background:#1f2937;
-
-    color:white;
-
-    border:1px solid #374151;
-
-    box-shadow:0 10px 35px rgba(0,0,0,.5);
-
-}
-
-
-.modalBox h3{
-
-    color:#f9fafb;
-
-}
-
-
-.modalBox p{
-
-    color:#d1d5db;
-
-}
-
-
-/* Vazgeç butonu */
-
-#cancelDelete{
-
-    background:#374151;
-
-    color:white;
-
-}
-
-
-#cancelDelete:hover{
-
-    background:#4b5563;
-
-}
-
-
-/* Sil butonu */
-
-#confirmDelete{
-
-    background:#dc2626;
-
-    color:white;
-
-}
-
-
-#confirmDelete:hover{
-
-    background:#b91c1c;
 
 }
