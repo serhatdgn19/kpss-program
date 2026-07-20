@@ -70,13 +70,17 @@ if (registerBtn) {
                 email,
                 password
             );
-            await setDoc(doc(db, "users", userCredential.user.uid), {
+await setDoc(doc(db, "users", userCredential.user.uid), {
 
     displayName: displayName,
 
     email: email,
 
     role: "user",
+
+    avatarStyle: "adventurer",
+
+    avatarSeed: userCredential.user.uid,
 
     createdAt: serverTimestamp()
 

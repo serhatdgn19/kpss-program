@@ -566,6 +566,7 @@ async function loadFriends(){
 
 const user = userSnap.data();
 
+
 html += `
 <div class="friendItem">
 
@@ -573,16 +574,28 @@ html += `
 class="friendName"
 data-uid="${uid}">
 
+<div class="friendAvatarBox">
+
+    <img
+        class="friendAvatar"
+        src="${getAvatarUrl({
+            avatarStyle: user.avatarStyle,
+            avatarSeed: user.avatarSeed || uid
+        })}"
+        alt="Avatar">
+
     <span
-    id="status-dot-${uid}"
-    class="status offline">
+        id="status-dot-${uid}"
+        class="status offline avatarStatus">
     </span>
+
+</div>
 
     <span class="friendInfo">
 
-        <strong>
-            ${user.displayName || user.email}
-        </strong>
+    <strong class="friendDisplayName">
+    ${user.displayName || user.email}
+</strong>
 
         <small id="status-text-${uid}">
             Çevrimdışı
@@ -640,22 +653,23 @@ friendIds.forEach(uid=>{
 }
 
 
-        if(status.online){
+if(status.online){
 
-            dot.classList.remove("offline");
-            dot.classList.add("online");
+    dot.classList.remove("offline");
+    dot.classList.add("online");
 
-            text.innerText="Çevrimiçi";
+    text.innerText = "Çevrimiçi";
 
-        }
-        else{
+}else{
 
-            dot.classList.remove("online");
-            dot.classList.add("offline");
+    dot.classList.remove("online");
+    dot.classList.add("offline");
 
-            text.innerText="Çevrimdışı";
+    text.innerText =
+        "Son görülme: " +
+        formatLastSeen(status.lastChanged);
 
-        }
+}
 
 
     });
@@ -824,6 +838,24 @@ const statusText = user.online
 
     document.getElementById("chatUserName").innerHTML =
      user.displayName;
+     const chatStatus =
+document.getElementById("chatUserStatus");
+
+watchUserPresence(uid,(status)=>{
+
+    if(status.online){
+
+        chatStatus.innerText = "🟢 Çevrimiçi";
+
+    }else{
+
+        chatStatus.innerText =
+            "⚫ Son görülme: " +
+            formatLastSeen(status.lastChanged);
+
+    }
+
+});
 
 
     await markMessagesAsRead();
@@ -1145,6 +1177,47 @@ function formatTime(timestamp){
     );
 
 }
+function formatLastSeen(timestamp){
+
+    if(!timestamp) return "Bilinmiyor";
+
+    const diff = Date.now() - timestamp;
+
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+
+    if(diff < minute){
+        return "Az önce";
+    }
+
+    if(diff < hour){
+        return Math.floor(diff / minute) + " dakika önce";
+    }
+
+    if(diff < day){
+        return Math.floor(diff / hour) + " saat önce";
+    }
+
+    const date = new Date(timestamp);
+
+    return date.toLocaleString("tr-TR",{
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric",
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+
+}
+function getAvatarUrl(user) {
+
+    const style = user.avatarStyle || "adventurer";
+    const seed = user.avatarSeed || user.uid;
+
+    return `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+
+}
 function updateChatBadge(number){
 
     const badge =
@@ -1298,18 +1371,9 @@ data-uid="${otherUid}">
 
 <div class="conversationUser">
 
-    <span
-    id="chat-status-dot-${otherUid}"
-    class="status offline">
-    </span>
-
-    <strong>
-        ${user.displayName || user.email}
-    </strong>
-
-    <small id="chat-status-text-${otherUid}">
-        Çevrimdışı
-    </small>
+   <strong class="friendDisplayName">
+    ${user.displayName || user.email}
+</strong>
 
 </div>
 ${unread > 0 ? `<span class="unreadBadge">${unread}</span>` : ""}
@@ -1368,21 +1432,23 @@ document.getElementById(
         if(!dot || !text) return;
 
 
-        if(status.online){
+if(status.online){
 
-            dot.classList.remove("offline");
-            dot.classList.add("online");
+    dot.classList.remove("offline");
+    dot.classList.add("online");
 
-            text.innerText="Çevrimiçi";
+    text.innerText = "Çevrimiçi";
 
-        }else{
+}else{
 
-            dot.classList.remove("online");
-            dot.classList.add("offline");
+    dot.classList.remove("online");
+    dot.classList.add("offline");
 
-            text.innerText="Çevrimdışı";
+    text.innerText =
+        "Son görülme: " +
+        formatLastSeen(status.lastChanged);
 
-        }
+}
 
 
     });

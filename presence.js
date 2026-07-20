@@ -7,6 +7,7 @@ import {
     onValue
 } from "./firebase.js";
 
+
 export async function startPresence() {
 
     const user = auth.currentUser;
