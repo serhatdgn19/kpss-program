@@ -294,11 +294,15 @@
 }
 
 .chatPage{
-
     display:none;
-
+    flex-direction:column;
+    height:100%;
+    min-height:0;
+    overflow:hidden;
     padding:15px;
-
+    box-sizing:border-box;
+    background:#111827;
+    color:white;
 }
 
 .chatPage.active{
@@ -492,12 +496,10 @@
 }
 
 .friendItem small{
-
     display:block;
-    margin-left:18px;
-    color:#bbb;
+    margin-left:0;
+    color:#9ca3af;
     font-size:12px;
-
 }
 .conversationUser{
     display:flex;
@@ -520,6 +522,7 @@
 .friendInfo{
     display:flex;
     flex-direction:column;
+    gap:3px;
 }
 
 
@@ -735,6 +738,7 @@
     background:#111827;
     color:white;
 }
+
 
 
 /* Arkadaş listesi */
@@ -1056,7 +1060,7 @@ button:hover{
 
     color:white;
 
-    font-size:16px;
+    font-size:12px;
 
     font-weight:600;
 
@@ -1074,7 +1078,7 @@ button:hover{
 
     background:#374151;
 
-    transform:translateY(-2px);
+    transform:translateY(-5px);
 
 }
 
@@ -1100,10 +1104,10 @@ button:hover{
 }
 
 #chatUserName{
-
     font-size:15px;
     font-weight:bold;
     color:white;
+    
 
 }
 
@@ -1157,7 +1161,7 @@ button:hover{
 
     color:#9ca3af;
 
-    font-size:13px;
+    font-size:11px;
 
 }
 .friendDisplayName{
